@@ -94,17 +94,19 @@ export async function POST(req: Request) {
       (e) => e.id === primary_email_address_id
     )?.email_address
 
-    await prisma.user.update({
+    const name = [first_name, last_name].filter(Boolean).join(" ") || null
+
+    // upsert guards against webhooks arriving before user.created (out-of-order delivery)
+    await prisma.user.upsert({
       where: { clerkId: id },
-      data: {
-        email: primaryEmail,
-        name: [first_name, last_name].filter(Boolean).join(" ") || null,
-      },
+      update: { email: primaryEmail, name },
+      create: { clerkId: id, email: primaryEmail ?? "", name, plan: "FREE" },
     })
   }
 
   if (event.type === "user.deleted") {
-    await prisma.user.delete({
+    // deleteMany never throws on a missing row — safe if the user was never synced
+    await prisma.user.deleteMany({
       where: { clerkId: event.data.id },
     })
   }

@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { verifyWorkerRequest } from "@/lib/worker-auth"
 
 const STALE_PROCESSING_MS = 10 * 60 * 1000 // 10 minutes
 
 export async function POST(req: NextRequest) {
-  const secret = req.headers.get("x-worker-secret")
-  if (!secret || secret !== process.env.WORKER_API_SECRET) {
+  if (!verifyWorkerRequest(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 

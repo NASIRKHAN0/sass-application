@@ -1,12 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { verifyWorkerRequest } from "@/lib/worker-auth"
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const secret = req.headers.get("x-worker-secret")
-  if (!secret || secret !== process.env.WORKER_API_SECRET) {
+  if (!verifyWorkerRequest(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 

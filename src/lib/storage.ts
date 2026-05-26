@@ -17,11 +17,16 @@ async function ensureDir() {
   }
 }
 
+const LOCAL_MAX_BYTES = 200 * 1024 * 1024 // 200 MB hard cap — defense-in-depth
+
 async function localUpload(
   key: string,
   buffer: Buffer,
   _contentType: string
 ): Promise<void> {
+  if (buffer.length > LOCAL_MAX_BYTES) {
+    throw new Error(`File exceeds the ${LOCAL_MAX_BYTES / (1024 * 1024)} MB storage limit.`)
+  }
   await ensureDir()
   const filePath = path.join(LOCAL_DIR, key.replace(/\//g, "_"))
   await fs.writeFile(filePath, buffer)

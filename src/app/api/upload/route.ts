@@ -5,6 +5,7 @@ import { storageUpload, buildStorageKey } from "@/lib/storage"
 import { getLimits } from "@/lib/limits"
 import { processJobLocally, LOCAL_TOOLS } from "@/lib/processor"
 import { getToolBySlug, canAccessTool } from "@/lib/tools"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 const ALLOWED_TYPES: Record<string, string[]> = {
   "pdf-to-word":       ["application/pdf"],
@@ -71,12 +72,31 @@ const LIBREOFFICE_TOOLS = new Set([
 ])
 
 export async function POST(req: Request) {
+  // Reject requests not originating from our own app (CSRF-style protection)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
+  const origin = req.headers.get("origin")
+  if (origin && origin !== appUrl) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
   let user
   try {
     user = await getCurrentUser()
   } catch (e) {
     if (e instanceof Response) return e
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  // Per-user sliding window: 20 uploads / minute
+  const rl = checkRateLimit(user.id)
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before uploading again." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) },
+      }
+    )
   }
 
   const limits = getLimits(user.plan)

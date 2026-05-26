@@ -4,8 +4,12 @@ All write operations (mark_complete / mark_failed) retry with exponential backof
 so a transient network blip doesn't orphan a successfully processed job.
 """
 import asyncio
+import hashlib
+import hmac
 import logging
 import os
+import time
+from urllib.parse import urlparse
 
 import httpx
 
@@ -19,16 +23,29 @@ def _base_url() -> str:
     return os.environ.get("NEXT_API_URL", "http://localhost:3000")
 
 
-def _headers() -> dict:
-    return {"x-worker-secret": os.environ.get("WORKER_API_SECRET", "")}
+def _signed_headers(path: str) -> dict:
+    """Build HMAC-signed headers for internal worker endpoints."""
+    secret = os.environ.get("WORKER_API_SECRET", "")
+    timestamp = str(int(time.time()))
+    message = f"{timestamp}\n{path}".encode()
+    signature = hmac.new(secret.encode(), message, hashlib.sha256).hexdigest()
+    return {
+        "x-worker-timestamp": timestamp,
+        "x-worker-signature": signature,
+    }
+
+
+def _path(url: str) -> str:
+    return urlparse(url).path
 
 
 async def claim_job() -> dict | None:
     """Ask Next.js for the next pending job. Returns None if queue is empty."""
+    url = f"{_base_url()}/api/internal/jobs/claim"
     async with httpx.AsyncClient(timeout=10) as client:
         res = await client.post(
-            f"{_base_url()}/api/internal/jobs/claim",
-            headers=_headers(),
+            url,
+            headers=_signed_headers(_path(url)),
         )
         if res.status_code == 204:
             return None
@@ -42,7 +59,7 @@ async def _patch_with_retry(url: str, payload: dict, operation: str) -> None:
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             async with httpx.AsyncClient(timeout=15) as client:
-                res = await client.patch(url, headers=_headers(), json=payload)
+                res = await client.patch(url, headers=_signed_headers(_path(url)), json=payload)
                 if res.status_code == 409:
                     # Job already in terminal state — idempotent, not an error
                     log.warning(f"{operation} returned 409 (already terminal) — skipping")
