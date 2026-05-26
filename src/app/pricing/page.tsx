@@ -131,10 +131,8 @@ export default function PricingPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">
             Pricing
           </p>
-          <h1 className="font-serif text-4xl md:text-6xl text-foreground mb-4">
-            Simple,{" "}
-            <span className="italic text-foreground/50">transparent</span>
-            {" "}pricing.
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
+            Simple, transparent pricing.
           </h1>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
             Start free. No credit card required. Upgrade when you need more power.
@@ -170,7 +168,7 @@ export default function PricingPage() {
                     )}
                   </div>
                   <div className="flex items-end gap-1 mb-0.5">
-                    <span className="font-serif text-4xl font-bold text-foreground">{plan.price}</span>
+                    <span className="text-4xl font-bold text-foreground">{plan.price}</span>
                     <span className="text-xs text-muted-foreground mb-1.5">/{plan.period}</span>
                   </div>
                   {plan.yearlyPrice && (
@@ -218,9 +216,8 @@ export default function PricingPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
                 Add-ons
               </p>
-              <h2 className="font-serif text-2xl text-foreground">
-                Pay for what you need,{" "}
-                <span className="italic text-foreground/50">when you need it.</span>
+              <h2 className="text-2xl font-bold text-foreground">
+                Pay for what you need, when you need it.
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -231,7 +228,7 @@ export default function PricingPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-foreground">{addon.name}</span>
-                    <span className="text-sm font-semibold text-foreground font-serif">{addon.price}</span>
+                    <span className="text-sm font-semibold text-foreground">{addon.price}</span>
                   </div>
                   <span className="text-xs text-muted-foreground">{addon.description}</span>
                 </div>
@@ -246,7 +243,7 @@ export default function PricingPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
               Compare plans
             </p>
-            <h2 className="font-serif text-2xl text-foreground">Full comparison</h2>
+            <h2 className="text-2xl font-bold text-foreground">Full comparison</h2>
           </div>
 
           <div className="rounded-sm border border-border/60 overflow-hidden">
@@ -283,7 +280,7 @@ export default function PricingPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
                 FAQ
               </p>
-              <h2 className="font-serif text-2xl text-foreground">
+              <h2 className="text-2xl font-bold text-foreground">
                 Common questions
               </h2>
             </div>
@@ -300,7 +297,7 @@ export default function PricingPage() {
 
         {/* ── CTA ── */}
         <section className="max-w-7xl mx-auto px-6 py-24 text-center">
-          <h2 className="font-serif text-3xl md:text-5xl text-foreground mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
             Ready to start?
           </h2>
           <p className="text-sm text-muted-foreground mb-8">

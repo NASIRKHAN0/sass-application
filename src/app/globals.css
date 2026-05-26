@@ -31,47 +31,47 @@
 }
 
 :root {
-  /* Warm cream light theme */
-  --background: oklch(0.975 0.007 75);      /* #FAF7F2 warm cream */
-  --foreground: oklch(0.14 0.008 55);       /* #1A1714 warm near-black */
-  --card: oklch(0.958 0.009 72);            /* #F5F1EA parchment */
-  --card-foreground: oklch(0.14 0.008 55);
-  --popover: oklch(0.958 0.009 72);
-  --popover-foreground: oklch(0.14 0.008 55);
-  --primary: oklch(0.14 0.008 55);          /* dark btn bg */
-  --primary-foreground: oklch(0.975 0.007 75); /* cream btn text */
-  --secondary: oklch(0.938 0.011 70);       /* slightly darker card */
-  --secondary-foreground: oklch(0.14 0.008 55);
-  --muted: oklch(0.938 0.011 70);
-  --muted-foreground: oklch(0.49 0.01 55);  /* #78716C warm gray */
-  --accent: oklch(0.938 0.011 70);
-  --accent-foreground: oklch(0.14 0.008 55);
+  /* Warm editorial palette: #FBDB93 #BE5B50 #8A2D3B #641B2E */
+  --background: #FFFFFF;
+  --foreground: #641B2E;
+  --card: #FAFAFA;
+  --card-foreground: #641B2E;
+  --popover: #FFFFFF;
+  --popover-foreground: #641B2E;
+  --primary: #BE5B50;
+  --primary-foreground: #ffffff;
+  --secondary: #F5F5F5;
+  --secondary-foreground: #641B2E;
+  --muted: #F5F5F5;
+  --muted-foreground: #8A2D3B;
+  --accent: #8A2D3B;
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.55 0.22 22);
-  --border: oklch(0.89 0.013 70);           /* #E8E0D4 warm border */
-  --input: oklch(0.89 0.013 70);
-  --ring: oklch(0.55 0.01 55);
+  --border: #EDCF96;
+  --input: #EDCF96;
+  --ring: #BE5B50;
   --radius: 0.25rem;
 }
 
 .dark {
-  --background: oklch(0.11 0.006 55);
-  --foreground: oklch(0.93 0.007 75);
-  --card: oklch(0.15 0.007 55);
-  --card-foreground: oklch(0.93 0.007 75);
-  --popover: oklch(0.15 0.007 55);
-  --popover-foreground: oklch(0.93 0.007 75);
-  --primary: oklch(0.93 0.007 75);
-  --primary-foreground: oklch(0.11 0.006 55);
-  --secondary: oklch(0.20 0.007 55);
-  --secondary-foreground: oklch(0.93 0.007 75);
-  --muted: oklch(0.20 0.007 55);
-  --muted-foreground: oklch(0.55 0.01 55);
-  --accent: oklch(0.20 0.007 55);
-  --accent-foreground: oklch(0.93 0.007 75);
+  --background: #641B2E;
+  --foreground: #FBDB93;
+  --card: #8A2D3B;
+  --card-foreground: #FBDB93;
+  --popover: #8A2D3B;
+  --popover-foreground: #FBDB93;
+  --primary: #BE5B50;
+  --primary-foreground: #FBDB93;
+  --secondary: #8A2D3B;
+  --secondary-foreground: #FBDB93;
+  --muted: #8A2D3B;
+  --muted-foreground: #FBDB93;
+  --accent: #FBDB93;
+  --accent-foreground: #641B2E;
   --destructive: oklch(0.65 0.22 22);
-  --border: oklch(0.24 0.009 55);
-  --input: oklch(0.24 0.009 55);
-  --ring: oklch(0.55 0.01 55);
+  --border: #BE5B5080;
+  --input: #BE5B5080;
+  --ring: #FBDB93;
 }
 
 @layer base {
@@ -91,8 +91,8 @@
   }
 
   ::selection {
-    background-color: oklch(0.14 0.008 55 / 12%);
-    color: oklch(0.14 0.008 55);
+    background-color: #FBDB9360;
+    color: #641B2E;
   }
 
   ::-webkit-scrollbar {
@@ -101,16 +101,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: oklch(0.975 0.007 75);
+    background: #FFFFFF;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.82 0.014 70);
+    background: #EDCF96;
     border-radius: 2px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.72 0.014 65);
+    background: #BE5B50;
   }
 }
 
@@ -152,8 +152,8 @@
   }
 
   .card-hover:hover {
-    border-color: oklch(0.14 0.008 55 / 25%);
-    background-color: oklch(0.948 0.011 70);
+    border-color: #BE5B5060;
+    background-color: #F5F5F5;
     transform: translateY(-2px);
   }
 
@@ -162,8 +162,8 @@
   }
 
   .invert-btn:hover {
-    background-color: oklch(0.14 0.008 55);
-    color: oklch(0.975 0.007 75);
+    background-color: #BE5B50;
+    color: #ffffff;
   }
 
   .section-line {
@@ -171,7 +171,7 @@
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, oklch(0.14 0.008 55) 0%, oklch(0.45 0.01 55) 100%);
+    background: linear-gradient(135deg, #641B2E 0%, #BE5B50 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

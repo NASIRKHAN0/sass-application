@@ -114,7 +114,7 @@ function PricingCard({
             </span>
           )}
         </div>
-        <p className="text-3xl font-bold text-foreground font-serif">{price}</p>
+        <p className="text-3xl font-bold text-foreground">{price}</p>
         <p className="text-xs text-muted-foreground mt-1">{description}</p>
       </div>
       <ul className="flex flex-col gap-2 flex-1">
@@ -147,51 +147,59 @@ export default function HomePage() {
     <>
       <Navbar />
 
-      {/* ── HERO ──────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden">
+      {/* ── HERO ─────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden" style={{ background: "#FFF0DD" }}>
         <div className="max-w-4xl mx-auto px-6 pt-12 pb-16 md:pt-8 md:pb-20 text-center">
 
           {/* Top label */}
           <div className="flex items-center justify-center gap-2 mb-8 animate-fade-up">
-            <span className="flex h-1.5 w-1.5 rounded-full bg-foreground/40" />
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">
+            <span className="flex h-1.5 w-1.5 rounded-full" style={{ background: "#E2A16F" }} />
+            <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "#86B0BD" }}>
               70+ File Tools · AI Transcription · $5/mo to launch
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="animate-fade-up animate-fade-up-delay-1 font-serif text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-foreground mb-8">
-            Convert,{" "}
-            Compress<br />
-            <span className="italic text-foreground/50">&amp; Transcribe.</span>
+          <h1
+            className="animate-fade-up animate-fade-up-delay-1 font-serif text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight mb-8"
+            style={{ color: "#2C2422" }}
+          >
+            Convert,{" "}Compress<br />
+            <span className="italic" style={{ color: "#86B0BD" }}>&amp; Transcribe.</span>
           </h1>
 
           {/* Sub */}
-          <p className="animate-fade-up animate-fade-up-delay-2 text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed mb-10">
+          <p
+            className="animate-fade-up animate-fade-up-delay-2 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-10"
+            style={{ color: "#6B7F88" }}
+          >
             The only platform combining 70+ professional file conversion tools
             with AI-powered voice transcription in 50+ languages.{" "}
-            <span className="text-foreground/70">No watermarks. No limits. Start free.</span>
+            <span style={{ color: "#2C2422", fontWeight: 500 }}>No watermarks. No limits. Start free.</span>
           </p>
 
           {/* CTAs */}
           <div className="animate-fade-up animate-fade-up-delay-3 flex flex-wrap items-center justify-center gap-6">
             <Link
               href="/sign-up"
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-sm bg-foreground text-background hover:bg-foreground/90 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-sm hover:opacity-90 transition-opacity"
+              style={{ background: "#E2A16F", color: "#ffffff" }}
             >
               Start for free
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link
               href="/tools"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+              className="inline-flex items-center gap-1.5 text-sm group transition-opacity hover:opacity-70"
+              style={{ color: "#2C2422" }}
             >
               View all 70+ tools
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+              className="inline-flex items-center gap-1.5 text-sm group transition-opacity hover:opacity-70"
+              style={{ color: "#2C2422" }}
             >
               See pricing
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -199,7 +207,10 @@ export default function HomePage() {
           </div>
 
           {/* Stats row */}
-          <div className="animate-fade-up animate-fade-up-delay-4 mt-14 flex flex-wrap items-center justify-center gap-10 pt-10 border-t border-border/60">
+          <div
+            className="animate-fade-up animate-fade-up-delay-4 mt-14 flex flex-wrap items-center justify-center gap-10 pt-10"
+            style={{ borderTop: "1px solid #D1D3D4" }}
+          >
             {[
               { value: "70+",  label: "Total tools" },
               { value: "50+",  label: "Languages" },
@@ -207,8 +218,8 @@ export default function HomePage() {
               { value: "2 GB", label: "Max file size" },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col items-center">
-                <span className="text-2xl font-bold font-serif text-foreground">{stat.value}</span>
-                <span className="text-xs text-muted-foreground mt-0.5">{stat.label}</span>
+                <span className="text-2xl font-bold font-serif" style={{ color: "#2C2422" }}>{stat.value}</span>
+                <span className="text-xs mt-0.5" style={{ color: "#86B0BD" }}>{stat.label}</span>
               </div>
             ))}
           </div>
@@ -225,9 +236,9 @@ export default function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
               What you can do
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-foreground">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
               Every tool you need,<br />
-              <span className="italic text-foreground/50">in one place.</span>
+              <span className="text-foreground/50">in one place.</span>
             </h2>
           </div>
           <Link
@@ -276,9 +287,9 @@ export default function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
               How it works
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-foreground">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
               Three steps.<br />
-              <span className="italic text-foreground/50">That&apos;s all.</span>
+              <span className="text-foreground/50">That&apos;s all.</span>
             </h2>
           </div>
 
@@ -289,7 +300,7 @@ export default function HomePage() {
               { step: "03", title: "Download the result", desc: "Ready instantly. Download or save to history for 30 days." },
             ].map(({ step, title, desc }) => (
               <div key={step} className="bg-background p-8 md:p-10">
-                <p className="font-serif text-5xl text-foreground/10 mb-4 select-none">{step}</p>
+                <p className="text-5xl font-bold text-foreground/10 mb-4 select-none">{step}</p>
                 <h3 className="text-sm font-semibold text-foreground mb-2">{title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
               </div>
@@ -304,9 +315,9 @@ export default function HomePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
             Why FileAI
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl text-foreground">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
             Not just another<br />
-            <span className="italic text-foreground/50">PDF tool.</span>
+            <span className="text-foreground/50">PDF tool.</span>
           </h2>
         </div>
 
@@ -360,7 +371,7 @@ export default function HomePage() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
                 Popular tools
               </p>
-              <h2 className="font-serif text-2xl text-foreground">Start converting now</h2>
+              <h2 className="text-2xl font-bold text-foreground">Start converting now</h2>
             </div>
             <Link
               href="/tools"
@@ -396,9 +407,8 @@ export default function HomePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
             Pricing
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl text-foreground">
-            Simple,{" "}
-            <span className="italic text-foreground/50">transparent pricing.</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+            Simple, transparent pricing.
           </h2>
           <p className="mt-3 text-sm text-muted-foreground max-w-sm mx-auto">
             Start free. Upgrade when you need more. Cancel anytime.
@@ -457,9 +467,8 @@ export default function HomePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 mb-4">
             Ready?
           </p>
-          <h2 className="font-serif text-4xl md:text-6xl text-foreground mb-6">
-            Start converting<br />
-            <span className="italic text-foreground/40">for free.</span>
+          <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+            Start converting for free.
           </h2>
           <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto">
             No credit card required. 5 free conversions per day.

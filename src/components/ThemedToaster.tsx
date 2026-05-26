@@ -1,11 +1,11 @@
 "use client"
 
-import { useTheme } from "next-themes"
+import { useTheme } from "@/components/ThemeProvider"
 import { Toaster } from "sonner"
 
 export function ThemedToaster() {
-  const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === "dark"
+  const { theme } = useTheme()
+  const isDark = theme === "dark"
 
   return (
     <Toaster
@@ -13,8 +13,8 @@ export function ThemedToaster() {
       theme={isDark ? "dark" : "light"}
       toastOptions={{
         style: isDark
-          ? { background: "oklch(0.15 0.007 55)", border: "1px solid oklch(0.24 0.009 55)", color: "oklch(0.93 0.007 75)" }
-          : { background: "oklch(0.958 0.009 72)", border: "1px solid oklch(0.89 0.013 70)", color: "oklch(0.14 0.008 55)" },
+          ? { background: "#8A2D3B", border: "1px solid #BE5B50", color: "#FBDB93" }
+          : { background: "#FFFFFF", border: "1px solid #EDCF96", color: "#641B2E" },
       }}
     />
   )

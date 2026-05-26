@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma"
 import { storageGetSignedUrl } from "@/lib/storage"
 import { getLimits } from "@/lib/limits"
 import { TOOLS } from "@/lib/tools"
+import { DeleteJobButton } from "@/components/jobs/DeleteJobButton"
 
 const QUICK_TOOLS = [
   { slug: "pdf-to-word",    label: "PDF to Word" },
@@ -127,7 +128,7 @@ export default async function DashboardPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-1">
               Dashboard
             </p>
-            <h1 className="font-serif text-3xl text-foreground">
+            <h1 className="text-3xl font-bold text-foreground">
               Welcome back{firstName ? `, ${firstName}` : ""}.
             </h1>
           </div>
@@ -170,7 +171,7 @@ export default async function DashboardPage() {
               ].map(({ label, value, sub }) => (
                 <div key={label} className="flex flex-col gap-1 p-4 rounded-sm border border-border/60 bg-card">
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">{label}</p>
-                  <p className="font-serif text-2xl font-bold text-foreground">{value}</p>
+                  <p className="text-2xl font-bold text-foreground">{value}</p>
                   <p className="text-xs text-muted-foreground/60">{sub}</p>
                 </div>
               ))}
@@ -232,8 +233,8 @@ export default async function DashboardPage() {
                           </div>
                         </div>
 
-                        {/* Status + Download */}
-                        <div className="flex items-center gap-3 shrink-0">
+                        {/* Status + Actions */}
+                        <div className="flex items-center gap-2 shrink-0">
                           <StatusBadge status={job.status} />
                           {job.status === "COMPLETED" && dlUrl && (
                             <a
@@ -245,6 +246,7 @@ export default async function DashboardPage() {
                               Download
                             </a>
                           )}
+                          <DeleteJobButton jobId={job.id} />
                         </div>
                       </div>
                     )

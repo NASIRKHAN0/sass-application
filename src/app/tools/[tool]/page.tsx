@@ -73,7 +73,7 @@ export default async function ToolPage({ params }: Props) {
                   </span>
                 )}
               </div>
-              <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-2">{tool.label}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{tool.label}</h1>
               <p className="text-sm text-muted-foreground max-w-lg">{tool.description}</p>
             </div>
 
@@ -159,7 +159,7 @@ export default async function ToolPage({ params }: Props) {
                 { step: "3", text: `Download your ${tool.outputFormat ?? "result"}` },
               ].map(({ step, text }) => (
                 <div key={step} className="flex items-start gap-3 p-4 rounded-sm border border-border/60 bg-card/40">
-                  <span className="font-serif text-2xl text-foreground/15 select-none leading-none mt-0.5">{step}</span>
+                  <span className="text-2xl font-bold text-foreground/15 select-none leading-none mt-0.5">{step}</span>
                   <span className="text-sm text-muted-foreground">{text}</span>
                 </div>
               ))}

@@ -63,9 +63,8 @@ export default function ToolsPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-2">
             All tools
           </p>
-          <h1 className="font-serif text-4xl md:text-5xl text-foreground">
-            70+ tools.<br />
-            <span className="italic text-foreground/50">One platform.</span>
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+            70+ tools. One platform.
           </h1>
           <p className="mt-3 text-sm text-muted-foreground max-w-lg">
             Convert PDFs, process images, and transcribe audio — everything you need without switching apps.

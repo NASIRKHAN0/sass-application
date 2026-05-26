@@ -61,7 +61,7 @@ export default async function BillingPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-1">
             Billing
           </p>
-          <h1 className="font-serif text-3xl text-foreground">Plan & billing</h1>
+          <h1 className="text-3xl font-bold text-foreground">Plan & billing</h1>
         </div>
 
         {/* Current plan card */}

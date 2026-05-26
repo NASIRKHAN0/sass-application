@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
-import { useTheme } from "next-themes"
+import { useTheme } from "@/components/ThemeProvider"
 import { useAuth, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs"
 import { cn } from "@/lib/utils"
 import { Menu, X, Zap, Moon, Sun } from "lucide-react"
@@ -60,7 +60,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-2">
             {mounted && (
               <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark") as unknown as void}
                 className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
                 aria-label="Toggle theme"
               >

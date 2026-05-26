@@ -58,7 +58,7 @@ export default function RootLayout({
     <ClerkProvider>
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${dmSans.variable} h-full`}
+      className={`${instrumentSerif.variable} ${dmSans.variable} h-full scroll-smooth`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">

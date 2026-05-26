@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { storageGetSignedUrl } from "@/lib/storage"
 import { TOOLS } from "@/lib/tools"
+import { DeleteJobButton } from "@/components/jobs/DeleteJobButton"
 
 function timeAgo(date: Date): string {
   const s = Math.floor((Date.now() - date.getTime()) / 1000)
@@ -91,7 +92,7 @@ export default async function HistoryPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 mb-1">
                 Conversion history
               </p>
-              <h1 className="font-serif text-3xl text-foreground">All jobs</h1>
+              <h1 className="text-3xl font-bold text-foreground">All jobs</h1>
             </div>
             <div className="flex items-center gap-4 text-xs text-muted-foreground/60 pt-1">
               <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3" /> {completed} completed</span>
@@ -160,18 +161,20 @@ export default async function HistoryPage() {
                       {/* Date */}
                       <span className="text-xs text-muted-foreground/50">{timeAgo(job.createdAt)}</span>
 
-                      {/* Status + download */}
-                      <div className="flex items-center gap-3">
+                      {/* Status + actions */}
+                      <div className="flex items-center gap-2">
                         <StatusBadge status={job.status} />
                         {job.status === "COMPLETED" && dlUrl && (
                           <a
                             href={dlUrl}
                             download
-                            className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-all px-2 py-1 rounded-sm border border-border/60 hover:border-foreground/30"
+                            className="opacity-0 group-hover:opacity-100 inline-flex items-center justify-center h-[26px] w-[26px] rounded-sm border border-border/60 text-muted-foreground hover:text-foreground transition-all"
+                            aria-label="Download"
                           >
                             <Download className="h-3 w-3" />
                           </a>
                         )}
+                        <DeleteJobButton jobId={job.id} />
                       </div>
                     </div>
                   )
