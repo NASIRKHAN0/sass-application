@@ -19,12 +19,19 @@ export async function processJobLocally(jobId: string): Promise<void> {
   const job = await prisma.job.findUnique({ where: { id: jobId } })
   if (!job) return
 
-  await prisma.job.update({ where: { id: jobId }, data: { status: "PROCESSING" } })
+  // Fetch user plan from DB — never trust client-supplied metadata for plan
+  const user = await prisma.user.findUnique({ where: { id: job.userId }, select: { plan: true } })
+  const userPlan = user?.plan ?? "FREE"
+
+  await prisma.job.update({
+    where: { id: jobId },
+    data: { status: "PROCESSING", processingStartedAt: new Date() },
+  })
 
   try {
     const inputBuffer = await storageRead(job.inputKey)
     const metadata = (job.metadata ?? {}) as Record<string, unknown>
-    const { outputBuffer, outputFilename } = await dispatch(job.type, inputBuffer, metadata, job.id)
+    const { outputBuffer, outputFilename } = await dispatch(job.type, inputBuffer, metadata, userPlan, job.id)
 
     const outputKey = buildStorageKey(job.userId, jobId, outputFilename)
     await storageUpload(outputKey, outputBuffer, getContentType(outputFilename))
@@ -52,13 +59,24 @@ export async function processJobLocally(jobId: string): Promise<void> {
 
 // ─── Dispatcher ───────────────────────────────────────────────────────────────
 
+// ─── Parameter validation ─────────────────────────────────────────────────────
+
+function clampInt(value: unknown, min: number, max: number, fallback: number): number {
+  const n = Number(value)
+  if (!Number.isFinite(n)) return fallback
+  return Math.max(min, Math.min(max, Math.round(n)))
+}
+
+// ─── Dispatcher ───────────────────────────────────────────────────────────────
+
 async function dispatch(
   type: string,
   input: Buffer,
   meta: Record<string, unknown>,
+  userPlan: string,
   jobId?: string
 ): Promise<{ outputBuffer: Buffer; outputFilename: string }> {
-  const isFree = meta._plan === "FREE"
+  const isFree = userPlan === "FREE"
 
   switch (type) {
     // ── Image conversions ──
@@ -69,12 +87,12 @@ async function dispatch(
     case "image-to-webp":
       return { outputBuffer: await sharp(input).webp({ quality: 85 }).toBuffer(), outputFilename: "output.webp" }
     case "compress-image": {
-      const quality = Number(meta.quality ?? 70)
+      const quality = clampInt(meta.quality, 1, 100, 70)
       return { outputBuffer: await sharp(input).jpeg({ quality }).toBuffer(), outputFilename: "compressed.jpg" }
     }
     case "resize-image": {
-      const width = Number(meta.width ?? 800)
-      const height = meta.height ? Number(meta.height) : undefined
+      const width = clampInt(meta.width, 1, 8000, 800)
+      const height = meta.height ? clampInt(meta.height, 1, 8000, 0) || undefined : undefined
       return {
         outputBuffer: await sharp(input).resize(width, height, { fit: "inside", withoutEnlargement: true }).toBuffer(),
         outputFilename: "resized.jpg",
@@ -88,11 +106,11 @@ async function dispatch(
     case "bmp-to-jpg":
       return { outputBuffer: await sharp(input).jpeg({ quality: 90 }).toBuffer(), outputFilename: "output.jpg" }
     case "image-to-avif": {
-      const quality = Number(meta.quality ?? 80)
+      const quality = clampInt(meta.quality, 1, 100, 80)
       return { outputBuffer: await sharp(input).avif({ quality }).toBuffer(), outputFilename: "output.avif" }
     }
     case "flip-image": {
-      const direction = (meta.direction as string) ?? "horizontal"
+      const direction = (meta.direction as string) === "vertical" ? "vertical" : "horizontal"
       const s = direction === "vertical" ? sharp(input).flip() : sharp(input).flop()
       return { outputBuffer: await s.toBuffer(), outputFilename: "flipped.jpg" }
     }
@@ -101,7 +119,7 @@ async function dispatch(
 
     // ── Merge images ──
     case "merge-images": {
-      const direction = (meta.direction as string) ?? "horizontal"
+      const direction = (meta.direction as string) === "vertical" ? "vertical" : "horizontal"
       const inputKeys = meta.inputKeys as string[] | undefined
       const buffers = inputKeys && inputKeys.length > 1
         ? await Promise.all(inputKeys.map((k) => storageRead(k)))
@@ -121,15 +139,19 @@ async function dispatch(
     case "merge-pdf":
       return { outputBuffer: await mergePdfs([input]), outputFilename: "merged.pdf" }
     case "split-pdf": {
-      const page = Number(meta.page ?? 1)
+      const page = clampInt(meta.page, 1, 9999, 1)
       return { outputBuffer: await extractPage(input, page - 1), outputFilename: `page-${page}.pdf` }
     }
     case "rotate-pdf": {
-      const angle = Number(meta.angle ?? 90)
+      const rawAngle = Number(meta.angle ?? 90)
+      const angle = [90, 180, 270].includes(rawAngle) ? rawAngle : 90
       return { outputBuffer: await rotatePdf(input, angle), outputFilename: "rotated.pdf" }
     }
     case "protect-pdf": {
-      const password = String(meta.password ?? "1234")
+      const password = String(meta.password ?? "").trim()
+      if (password.length < 4) {
+        throw new Error("A password of at least 4 characters is required to protect this PDF.")
+      }
       return { outputBuffer: await protectPdf(input, password), outputFilename: "protected.pdf" }
     }
 

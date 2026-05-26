@@ -37,22 +37,25 @@ model Subscription {
 }
 
 model Job {
-  id           String    @id @default(cuid())
-  userId       String
-  type         String
-  status       JobStatus @default(PENDING)
-  inputKey     String
-  outputKey    String?
-  outputSize   Int?
-  errorMessage String?
-  metadata     Json?
-  createdAt    DateTime  @default(now())
-  completedAt  DateTime?
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String    @id @default(cuid())
+  userId              String
+  type                String
+  status              JobStatus @default(PENDING)
+  inputKey            String
+  outputKey           String?
+  outputSize          Int?
+  errorMessage        String?
+  metadata            Json?
+  createdAt           DateTime  @default(now())
+  processingStartedAt DateTime?
+  completedAt         DateTime?
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([status])
   @@index([createdAt])
+  @@index([userId, status])
+  @@index([status, createdAt])
 }
 
 model Usage {

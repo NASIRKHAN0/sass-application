@@ -125,12 +125,12 @@ export async function POST(req: Request) {
     )
   }
 
-  // Daily job limit check for FREE plan
+  // Daily job limit check — must run BEFORE any file upload to avoid orphaned files
   if (user.plan === "FREE") {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const todayCount = await prisma.job.count({
-      where: { userId: user.id, createdAt: { gte: today } },
+      where: { userId: user.id, status: { in: ["PENDING", "PROCESSING", "COMPLETED"] }, createdAt: { gte: today } },
     })
     if (todayCount >= limits.dailyJobs) {
       return NextResponse.json(
@@ -140,9 +140,9 @@ export async function POST(req: Request) {
     }
   }
 
-  // Store files — merge-images supports multiple uploads
+  // Upload file(s) to storage — only after all checks pass
+  // _plan is intentionally NOT stored in metadata; processor reads plan from DB
   const options: Record<string, unknown> = optionsRaw ? JSON.parse(optionsRaw) : {}
-  options._plan = user.plan
 
   let inputKey: string
   if (jobType === "merge-images" && files.length > 1) {
@@ -160,31 +160,31 @@ export async function POST(req: Request) {
     await storageUpload(inputKey, buffer, file.type)
   }
 
-  // Create job record
-  const job = await prisma.job.create({
-    data: {
-      userId: user.id,
-      type: jobType,
-      status: "PENDING",
-      inputKey,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      metadata: options as any,
-    },
-  })
-
-  // Update usage counter
+  // Create job + update usage counter atomically so they can never diverge
   const month = new Date().toISOString().slice(0, 7)
-  await prisma.usage.upsert({
-    where: { userId_month: { userId: user.id, month } },
-    create: { userId: user.id, month, jobCount: 1 },
-    update: { jobCount: { increment: 1 } },
-  })
+  const [job] = await prisma.$transaction([
+    prisma.job.create({
+      data: {
+        userId: user.id,
+        type: jobType,
+        status: "PENDING",
+        inputKey,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        metadata: options as any,
+      },
+    }),
+    prisma.usage.upsert({
+      where: { userId_month: { userId: user.id, month } },
+      create: { userId: user.id, month, jobCount: 1 },
+      update: { jobCount: { increment: 1 } },
+    }),
+  ])
 
   // Process immediately if this tool is supported locally (no Python worker needed)
   if (LOCAL_TOOLS.has(jobType)) {
-    await processJobLocally(job.id)
-    const updated = await prisma.job.findUnique({ where: { id: job.id } })
-    return NextResponse.json({ jobId: job.id, status: updated?.status ?? "PENDING" }, { status: 201 })
+    // Fire-and-forget: don't block the response on processing time
+    processJobLocally(job.id).catch(() => {/* status saved to DB by processJobLocally */})
+    return NextResponse.json({ jobId: job.id, status: "PROCESSING" }, { status: 201 })
   }
 
   return NextResponse.json({ jobId: job.id, status: job.status }, { status: 201 })

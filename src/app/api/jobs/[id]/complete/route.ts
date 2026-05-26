@@ -1,8 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
-// Called by the Python worker when a job finishes successfully.
-// Protected by a shared secret header, not Clerk auth.
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -18,8 +16,10 @@ export async function PATCH(
     outputSize: number
   }
 
-  const job = await prisma.job.update({
-    where: { id },
+  // Only update if the job is still PROCESSING — prevents double-complete
+  // and rejects callbacks for jobs that were already reset as stale.
+  const result = await prisma.job.updateMany({
+    where: { id, status: "PROCESSING" },
     data: {
       status: "COMPLETED",
       outputKey,
@@ -28,5 +28,9 @@ export async function PATCH(
     },
   })
 
-  return NextResponse.json({ job })
+  if (result.count === 0) {
+    return NextResponse.json({ error: "Job not found or not in PROCESSING state" }, { status: 409 })
+  }
+
+  return NextResponse.json({ ok: true })
 }
