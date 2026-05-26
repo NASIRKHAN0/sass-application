@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, Check, FileText, Image, Mic, Sparkles, Zap, Shield } from "lucide-react"
+import { ArrowRight, Check, FileText, Image, Mic, Sparkles, Zap, Shield, Video, BookOpen, Wrench } from "lucide-react"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { TOOL_CATEGORIES, TICKER_FORMATS, MVP_TOOLS } from "@/lib/tools"
@@ -25,9 +25,12 @@ function TickerStrip() {
 
 /* ─── Category Card ──────────────────────────────────────────────── */
 const CATEGORY_ICONS = {
-  pdf:   FileText,
-  image: Image,
-  audio: Mic,
+  pdf:      FileText,
+  image:    Image,
+  audio:    Mic,
+  video:    Video,
+  document: BookOpen,
+  utility:  Wrench,
 }
 
 function CategoryCard({ id, data }: { id: string; data: { label: string; description: string; count: number } }) {
@@ -249,8 +252,8 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {categories.map(([id, data]) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {categories.slice(0, 3).map(([id, data]) => (
             <CategoryCard key={id} id={id} data={data} />
           ))}
           {/* AI Card */}

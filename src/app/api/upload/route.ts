@@ -35,6 +35,33 @@ const ALLOWED_TYPES: Record<string, string[]> = {
   "transcribe-mp3":    ["audio/mpeg", "audio/mp3"],
   "transcribe-audio":  ["audio/mpeg", "audio/wav", "audio/m4a", "audio/ogg", "audio/flac"],
   "transcribe-video":  ["video/mp4", "video/quicktime", "video/x-msvideo"],
+  // ── New image tools ──
+  "tiff-to-jpg":       ["image/tiff"],
+  "bmp-to-jpg":        ["image/bmp"],
+  "image-to-avif":     ["image/jpeg", "image/jpg", "image/png", "image/webp"],
+  "flip-image":        ["image/jpeg", "image/jpg", "image/png", "image/webp"],
+  "favicon-generator": ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/svg+xml"],
+  "add-text-image":    ["image/jpeg", "image/jpg", "image/png", "image/webp"],
+  "photo-enhancer":    ["image/jpeg", "image/jpg", "image/png", "image/webp"],
+  "heic-to-jpg":       ["image/heic", "image/heif"],
+  "svg-to-png":        ["image/svg+xml"],
+  "remove-background": ["image/jpeg", "image/jpg", "image/png", "image/webp"],
+  // ── Audio conversion ──
+  "mp4-to-mp3":        ["video/mp4", "video/mpeg", "video/x-m4v"],
+  "audio-to-mp3":      ["audio/mpeg", "audio/wav", "audio/m4a", "audio/x-m4a", "audio/ogg", "audio/flac", "audio/aac"],
+  "trim-audio":        ["audio/mpeg", "audio/wav", "audio/m4a", "audio/x-m4a", "audio/ogg", "audio/flac"],
+  "compress-audio":    ["audio/mpeg", "audio/wav", "audio/ogg", "audio/flac"],
+  "merge-audio":       ["audio/mpeg", "audio/wav", "audio/ogg", "audio/flac"],
+  // ── Video tools ──
+  "mp4-to-gif":        ["video/mp4", "video/x-m4v", "video/mpeg"],
+  "trim-video":        ["video/mp4", "video/quicktime", "video/x-msvideo", "video/x-matroska"],
+  "compress-video":    ["video/mp4", "video/quicktime"],
+  "video-to-mp4":      ["video/quicktime", "video/x-msvideo", "video/x-matroska", "video/avi"],
+  // ── Document tools ──
+  "html-to-pdf":       ["text/html"],
+  "markdown-to-pdf":   ["text/markdown", "text/plain", "text/x-markdown"],
+  "txt-to-pdf":        ["text/plain"],
+  "csv-to-excel":      ["text/csv", "application/csv", "text/x-csv"],
 }
 
 // Tools that require LibreOffice — only available on VPS, not local dev

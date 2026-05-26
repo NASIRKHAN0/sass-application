@@ -1,17 +1,20 @@
 import Link from "next/link"
-import { ArrowRight, FileText, Image, Mic } from "lucide-react"
+import { ArrowRight, FileText, Image, Mic, Video, BookOpen, Wrench } from "lucide-react"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { TOOLS, TOOL_CATEGORIES } from "@/lib/tools"
 import type { Tool, ToolCategory } from "@/lib/tools"
 
-const CATEGORY_ICONS = {
-  pdf:   { icon: FileText, color: "text-foreground/60" },
-  image: { icon: Image,    color: "text-foreground/60" },
-  audio: { icon: Mic,      color: "text-foreground/60" },
+const CATEGORY_ICONS: Record<ToolCategory, { icon: React.ElementType }> = {
+  pdf:      { icon: FileText },
+  image:    { icon: Image    },
+  audio:    { icon: Mic      },
+  video:    { icon: Video    },
+  document: { icon: BookOpen },
+  utility:  { icon: Wrench   },
 }
 
-const CATEGORY_ORDER: ToolCategory[] = ["pdf", "image", "audio"]
+const CATEGORY_ORDER: ToolCategory[] = ["pdf", "image", "audio", "video", "document", "utility"]
 
 function ToolRow({ tool }: { tool: Tool }) {
   return (
@@ -64,22 +67,22 @@ export default function ToolsPage() {
             All tools
           </p>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-            70+ tools. One platform.
+            {TOOLS.length}+ tools. One platform.
           </h1>
           <p className="mt-3 text-sm text-muted-foreground max-w-lg">
-            Convert PDFs, process images, and transcribe audio — everything you need without switching apps.
+            Convert PDFs, process images, transcribe audio, convert video, and developer utilities — everything in one place.
           </p>
         </div>
 
         {/* Category Stats */}
-        <div className="grid grid-cols-3 gap-2 mb-12 p-4 rounded-sm border border-border/60 bg-card/40">
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-12 p-4 rounded-sm border border-border/60 bg-card/40">
           {Object.entries(TOOL_CATEGORIES).map(([id, cat]) => {
             const { icon: Icon } = CATEGORY_ICONS[id as ToolCategory]
             return (
               <a href={`#${id}`} key={id} className="flex flex-col items-center gap-1 py-2 group">
                 <Icon className="h-4 w-4 text-muted-foreground/50 group-hover:text-foreground/60 transition-colors" />
                 <span className="text-xs font-semibold text-foreground">{cat.count}</span>
-                <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider">{cat.label}</span>
+                <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider text-center">{cat.label}</span>
               </a>
             )
           })}
@@ -88,7 +91,7 @@ export default function ToolsPage() {
         {/* Tools by category */}
         <div className="flex flex-col gap-16">
           {CATEGORY_ORDER.map((catId) => {
-            const cat = TOOL_CATEGORIES[catId]
+            const cat = TOOL_CATEGORIES[catId as keyof typeof TOOL_CATEGORIES]
             const tools = TOOLS.filter((t) => t.category === catId)
             const mvp = tools.filter((t) => t.priority === "mvp")
             const rest = tools.filter((t) => t.priority !== "mvp")

@@ -84,6 +84,104 @@ def remove_background(data: bytes, _meta: dict) -> tuple[bytes, str]:
     return output, "no-background.png"
 
 
+def tiff_to_jpg(data: bytes, meta: dict) -> tuple[bytes, str]:
+    quality = int(meta.get("quality", 90))
+    img = Image.open(io.BytesIO(data)).convert("RGB")
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=quality, optimize=True)
+    return buf.getvalue(), "output.jpg"
+
+
+def bmp_to_jpg(data: bytes, meta: dict) -> tuple[bytes, str]:
+    quality = int(meta.get("quality", 90))
+    img = Image.open(io.BytesIO(data)).convert("RGB")
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=quality, optimize=True)
+    return buf.getvalue(), "output.jpg"
+
+
+def image_to_avif(data: bytes, meta: dict) -> tuple[bytes, str]:
+    quality = int(meta.get("quality", 80))
+    img = Image.open(io.BytesIO(data))
+    buf = io.BytesIO()
+    img.save(buf, format="AVIF", quality=quality)
+    return buf.getvalue(), "output.avif"
+
+
+def flip_image(data: bytes, meta: dict) -> tuple[bytes, str]:
+    direction = meta.get("direction", "horizontal")
+    img = Image.open(io.BytesIO(data))
+    if direction == "vertical":
+        flipped = img.transpose(Image.FLIP_TOP_BOTTOM)
+    else:
+        flipped = img.transpose(Image.FLIP_LEFT_RIGHT)
+    buf = io.BytesIO()
+    fmt = img.format or "JPEG"
+    flipped.save(buf, format=fmt)
+    return buf.getvalue(), f"flipped.{fmt.lower()}"
+
+
+def add_text_image(data: bytes, meta: dict) -> tuple[bytes, str]:
+    from PIL import ImageDraw, ImageFont
+
+    text = str(meta.get("text", "FileAI"))
+    position = meta.get("position", "bottom")
+    font_size = int(meta.get("fontSize", 48))
+    color = meta.get("color", "#ffffff")
+
+    img = Image.open(io.BytesIO(data)).convert("RGBA")
+    overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    try:
+        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
+    except (OSError, IOError):
+        font = ImageFont.load_default()
+
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_w = bbox[2] - bbox[0]
+    text_h = bbox[3] - bbox[1]
+    padding = 20
+
+    if position == "top":
+        x = (img.width - text_w) // 2
+        y = padding
+    elif position == "center":
+        x = (img.width - text_w) // 2
+        y = (img.height - text_h) // 2
+    else:  # bottom
+        x = (img.width - text_w) // 2
+        y = img.height - text_h - padding
+
+    # Shadow for readability
+    draw.text((x + 2, y + 2), text, font=font, fill=(0, 0, 0, 160))
+    draw.text((x, y), text, font=font, fill=color)
+
+    result = Image.alpha_composite(img, overlay).convert("RGB")
+    buf = io.BytesIO()
+    result.save(buf, format="JPEG", quality=92)
+    return buf.getvalue(), "output.jpg"
+
+
+def photo_enhancer(data: bytes, meta: dict) -> tuple[bytes, str]:
+    from PIL import ImageEnhance
+
+    brightness = float(meta.get("brightness", 1.0))
+    contrast = float(meta.get("contrast", 1.0))
+    sharpness = float(meta.get("sharpness", 1.0))
+    saturation = float(meta.get("saturation", 1.0))
+
+    img = Image.open(io.BytesIO(data)).convert("RGB")
+    img = ImageEnhance.Brightness(img).enhance(brightness)
+    img = ImageEnhance.Contrast(img).enhance(contrast)
+    img = ImageEnhance.Sharpness(img).enhance(sharpness)
+    img = ImageEnhance.Color(img).enhance(saturation)
+
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=92)
+    return buf.getvalue(), "enhanced.jpg"
+
+
 # ─── Dispatcher ───────────────────────────────────────────────────────────────
 
 IMAGE_PROCESSORS = {
@@ -98,4 +196,10 @@ IMAGE_PROCESSORS = {
     "grayscale-image":    grayscale_image,
     "grayscale":          grayscale_image,
     "remove-background":  remove_background,
+    "tiff-to-jpg":        tiff_to_jpg,
+    "bmp-to-jpg":         bmp_to_jpg,
+    "image-to-avif":      image_to_avif,
+    "flip-image":         flip_image,
+    "add-text-image":     add_text_image,
+    "photo-enhancer":     photo_enhancer,
 }

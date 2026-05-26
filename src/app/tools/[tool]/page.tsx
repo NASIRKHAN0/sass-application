@@ -6,7 +6,14 @@ import { Footer } from "@/components/layout/Footer"
 import { getToolBySlug, canAccessTool, TOOLS } from "@/lib/tools"
 import { UploadZone } from "@/components/tools/UploadZone"
 import { QRCodeTool } from "@/components/tools/QRCodeTool"
+import { UtilityTool, type UtilitySlug } from "@/components/tools/UtilityTool"
 import { getCurrentUserOrNull } from "@/lib/auth"
+
+const UTILITY_SLUGS = new Set<string>([
+  "base64-encode", "json-formatter", "url-encoder", "hash-generator",
+  "color-converter", "uuid-generator", "text-case-converter",
+  "image-to-base64", "csv-to-json",
+])
 
 interface Props {
   params: Promise<{ tool: string }>
@@ -143,6 +150,9 @@ export default async function ToolPage({ params }: Props) {
         ) : tool.slug === "qr-code" ? (
           /* QR Code Generator — no file upload needed */
           <QRCodeTool />
+        ) : UTILITY_SLUGS.has(tool.slug) ? (
+          /* Client-side utility — no file upload */
+          <UtilityTool slug={tool.slug as UtilitySlug} />
         ) : (
           /* Upload Zone */
           <UploadZone tool={tool} userPlan={userPlan} />

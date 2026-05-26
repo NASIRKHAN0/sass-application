@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 export const LOCAL_TOOLS = new Set([
   "jpg-to-png", "png-to-jpg", "image-to-webp",
   "compress-image", "resize-image", "grayscale-image",
+  "tiff-to-jpg", "bmp-to-jpg", "image-to-avif", "flip-image", "favicon-generator",
   "jpg-to-pdf", "png-to-pdf",
   "merge-pdf", "split-pdf", "rotate-pdf", "protect-pdf",
   "merge-images",
@@ -81,6 +82,22 @@ async function dispatch(
     }
     case "grayscale-image":
       return { outputBuffer: await sharp(input).grayscale().toBuffer(), outputFilename: "grayscale.jpg" }
+
+    case "tiff-to-jpg":
+      return { outputBuffer: await sharp(input).jpeg({ quality: 90 }).toBuffer(), outputFilename: "output.jpg" }
+    case "bmp-to-jpg":
+      return { outputBuffer: await sharp(input).jpeg({ quality: 90 }).toBuffer(), outputFilename: "output.jpg" }
+    case "image-to-avif": {
+      const quality = Number(meta.quality ?? 80)
+      return { outputBuffer: await sharp(input).avif({ quality }).toBuffer(), outputFilename: "output.avif" }
+    }
+    case "flip-image": {
+      const direction = (meta.direction as string) ?? "horizontal"
+      const s = direction === "vertical" ? sharp(input).flip() : sharp(input).flop()
+      return { outputBuffer: await s.toBuffer(), outputFilename: "flipped.jpg" }
+    }
+    case "favicon-generator":
+      return { outputBuffer: await sharp(input).resize(32, 32, { fit: "cover" }).png().toBuffer(), outputFilename: "favicon-32.png" }
 
     // ── Merge images ──
     case "merge-images": {
@@ -238,8 +255,10 @@ function getContentType(filename: string): string {
   const map: Record<string, string> = {
     pdf: "application/pdf",
     jpg: "image/jpeg", jpeg: "image/jpeg",
-    png: "image/png", webp: "image/webp",
+    png: "image/png", webp: "image/webp", avif: "image/avif", gif: "image/gif",
+    mp3: "audio/mpeg", mp4: "video/mp4",
     txt: "text/plain", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   }
   return map[ext ?? ""] ?? "application/octet-stream"
 }

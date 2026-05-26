@@ -36,6 +36,18 @@ except Exception as _audio_err:
     log.warning(f"Audio processor unavailable: {_audio_err}")
     AUDIO_PROCESSORS = {}
 
+try:
+    from processors.media_processor import MEDIA_PROCESSORS
+except Exception as _media_err:
+    log.warning(f"Media processor unavailable: {_media_err}")
+    MEDIA_PROCESSORS = {}
+
+try:
+    from processors.document_processor import DOCUMENT_PROCESSORS
+except Exception as _doc_err:
+    log.warning(f"Document processor unavailable: {_doc_err}")
+    DOCUMENT_PROCESSORS = {}
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     asyncio.create_task(polling_loop())
@@ -43,7 +55,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="FileAI Worker", version="1.0.0", lifespan=lifespan)
 
-ALL_PROCESSORS = {**PDF_PROCESSORS, **IMAGE_PROCESSORS, **AUDIO_PROCESSORS}
+ALL_PROCESSORS = {
+    **PDF_PROCESSORS,
+    **IMAGE_PROCESSORS,
+    **AUDIO_PROCESSORS,
+    **MEDIA_PROCESSORS,
+    **DOCUMENT_PROCESSORS,
+}
 
 POLL_INTERVAL = float(os.environ.get("POLL_INTERVAL_SECONDS", "2"))
 
