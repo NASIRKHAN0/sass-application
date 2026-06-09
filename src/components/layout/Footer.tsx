@@ -8,16 +8,16 @@ const FOOTER_LINKS = {
     { href: "/dashboard", label: "Dashboard" },
   ],
   "PDF Tools": [
-    { href: "/tools/pdf-to-word",   label: "PDF to Word" },
-    { href: "/tools/compress-pdf",  label: "Compress PDF" },
     { href: "/tools/merge-pdf",     label: "Merge PDF" },
-    { href: "/tools/ocr-pdf",       label: "OCR PDF" },
+    { href: "/tools/split-pdf",     label: "Split PDF" },
+    { href: "/tools/rotate-pdf",    label: "Rotate PDF" },
+    { href: "/tools/protect-pdf",   label: "Protect PDF" },
   ],
-  "Image & Audio": [
-    { href: "/tools/remove-background", label: "Remove Background" },
-    { href: "/tools/transcribe-mp3",    label: "Transcribe MP3" },
-    { href: "/tools/compress-image",    label: "Compress Image" },
-    { href: "/tools/ai-summarize",      label: "AI Summarize" },
+  "Image Tools": [
+    { href: "/tools/compress-image",  label: "Compress Image" },
+    { href: "/tools/resize-image",    label: "Resize Image" },
+    { href: "/tools/png-to-jpg",      label: "PNG to JPG" },
+    { href: "/tools/image-to-webp",   label: "Image to WebP" },
   ],
   Legal: [
     { href: "/privacy", label: "Privacy Policy" },
@@ -41,7 +41,7 @@ export function Footer() {
               <span className="text-sm font-semibold tracking-tight">FileAI</span>
             </Link>
             <p className="text-xs text-muted-foreground leading-relaxed max-w-[180px]">
-              70+ file tools with AI-powered voice transcription. One platform.
+              Free PDF and image conversion tools. No sign-up required.
             </p>
             <p className="mt-4 text-xs text-muted-foreground/60">
               © {new Date().getFullYear()} FileAI

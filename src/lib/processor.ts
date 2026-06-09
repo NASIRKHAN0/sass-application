@@ -1,6 +1,6 @@
 import sharp from "sharp"
 import { PDFDocument, degrees, rgb, StandardFonts } from "pdf-lib"
-import { storageRead, storageUpload, buildStorageKey } from "@/lib/storage"
+import { storageRead, storageUpload, storageDelete, buildStorageKey } from "@/lib/storage"
 import { prisma } from "@/lib/prisma"
 
 // ─── Tools supported locally (no Python worker needed) ───────────────────────
@@ -36,6 +36,11 @@ export async function processJobLocally(jobId: string): Promise<void> {
     const outputKey = buildStorageKey(job.userId, jobId, outputFilename)
     await storageUpload(outputKey, outputBuffer, getContentType(outputFilename))
 
+    // Delete input file — no longer needed once output is ready
+    await storageDelete(job.inputKey)
+    const extraKeys = (metadata.inputKeys as string[] | undefined) ?? []
+    for (const k of extraKeys) await storageDelete(k)
+
     await prisma.job.update({
       where: { id: jobId },
       data: {
@@ -46,6 +51,9 @@ export async function processJobLocally(jobId: string): Promise<void> {
       },
     })
   } catch (err) {
+    // Delete input even on failure — don't leave orphaned uploads
+    await storageDelete(job.inputKey).catch(() => {})
+
     await prisma.job.update({
       where: { id: jobId },
       data: {
