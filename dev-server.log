@@ -382,3 +382,86 @@ https://react.dev/link/hydration-mismatch
  GET /pricing 200 in 1094ms (next.js: 250ms, proxy.ts: 91ms, application-code: 754ms)
  GET /pricing 200 in 1106ms (next.js: 431ms, proxy.ts: 93ms, application-code: 582ms)
  GET /pricing 200 in 1095ms (next.js: 623ms, proxy.ts: 98ms, application-code: 375ms)
+✓ Compiled in 168ms
+⚠ Fast Refresh had to perform a full reload when ./src/components/ThemeProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /pricing 200 in 2.3s (next.js: 363ms, proxy.ts: 376ms, application-code: 1567ms)
+ GET /pricing 200 in 2.2s (next.js: 9ms, proxy.ts: 673ms, application-code: 1500ms)
+[browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://clever-giraffe-3.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:3216)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <SegmentViewNode type="layout" pagePath="layout.tsx">
+      <SegmentTrieNode>
+      <link>
+      <script>
+      <script>
+      <script>
+      <script>
+      <RootLayout>
+        <ClerkProvider>
+          <ClientClerkProvider publishableKey="pk_test_Y2..." proxyUrl="" domain="" isSatellite={false} ...>
+            ...
+              <ClerkProvider publishableKey="pk_test_Y2..." proxyUrl="" domain="" isSatellite={false} ...>
+                <ClerkProviderBase publishableKey="pk_test_Y2..." proxyUrl="" domain="" isSatellite={false} ...>
+                  <ClerkContextProvider initialState={undefined} clerk={{clerkjs:null, ...}} clerkStatus="loading">
+                    <InitialStateProvider initialState={undefined}>
+                      <__experimental_CheckoutProvider value={undefined}>
+                        <RouterTelemetry>
+                        <ClerkScripts>
+                        <html lang="en" className="instrument..." suppressHydrationWarning={true}>
+                          <body
+                            className="min-h-full flex flex-col bg-background text-foreground antialiased"
+-                           cz-shortcut-listen="true"
+                          >
+ 
+ GET /pricing 200 in 485ms (next.js: 8ms, proxy.ts: 20ms, application-code: 458ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <SegmentViewNode type="layout" pagePath="layout.tsx">
+      <SegmentTrieNode>
+      <link>
+      <script>
+      <script>
+      <script>
+      <script>
+      <RootLayout>
+        <ClerkProvider>
+          <ClientClerkProvider publishableKey="pk_test_Y2..." proxyUrl="" domain="" isSatellite={false} ...>
+            ...
+              <ClerkProvider publishableKey="pk_test_Y2..." proxyUrl="" domain="" isSatellite={false} ...>
+                <ClerkProviderBase publishableKey="pk_test_Y2..." proxyUrl="" domain="" isSatellite={false} ...>
+                  <ClerkContextProvider initialState={undefined} clerk={{clerkjs:null, ...}} clerkStatus="loading">
+                    <InitialStateProvider initialState={undefined}>
+                      <__experimental_CheckoutProvider value={undefined}>
+                        <RouterTelemetry>
+                        <ClerkScripts>
+                        <html lang="en" className="instrument..." suppressHydrationWarning={true}>
+                          <body
+                            className="min-h-full flex flex-col bg-background text-foreground antialiased"
+-                           cz-shortcut-listen="true"
+                          >
+ 
+[browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://clever-giraffe-3.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:3216)
+ GET / 200 in 887ms (next.js: 516ms, proxy.ts: 25ms, application-code: 347ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
