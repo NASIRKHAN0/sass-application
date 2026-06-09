@@ -16,6 +16,11 @@ const CATEGORY_ICONS: Record<ToolCategory, { icon: React.ElementType }> = {
 
 const CATEGORY_ORDER: ToolCategory[] = ["pdf", "image", "audio", "video", "document", "utility"]
 
+// Only show categories that are active in TOOL_CATEGORIES (paid ones are commented out)
+const ACTIVE_CATEGORIES = CATEGORY_ORDER.filter(
+  (id) => id in TOOL_CATEGORIES && TOOLS.some((t) => t.category === id)
+)
+
 function ToolRow({ tool }: { tool: Tool }) {
   return (
     <Link
@@ -76,7 +81,8 @@ export default function ToolsPage() {
 
         {/* Category Stats */}
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-12 p-4 rounded-sm border border-border/60 bg-card/40">
-          {Object.entries(TOOL_CATEGORIES).map(([id, cat]) => {
+          {ACTIVE_CATEGORIES.map((id) => {
+            const cat = TOOL_CATEGORIES[id as keyof typeof TOOL_CATEGORIES]!
             const { icon: Icon } = CATEGORY_ICONS[id as ToolCategory]
             return (
               <a href={`#${id}`} key={id} className="flex flex-col items-center gap-1 py-2 group">
@@ -90,8 +96,8 @@ export default function ToolsPage() {
 
         {/* Tools by category */}
         <div className="flex flex-col gap-16">
-          {CATEGORY_ORDER.map((catId) => {
-            const cat = TOOL_CATEGORIES[catId as keyof typeof TOOL_CATEGORIES]
+          {ACTIVE_CATEGORIES.map((catId) => {
+            const cat = TOOL_CATEGORIES[catId as keyof typeof TOOL_CATEGORIES]!
             const tools = TOOLS.filter((t) => t.category === catId)
             const mvp = tools.filter((t) => t.priority === "mvp")
             const rest = tools.filter((t) => t.priority !== "mvp")

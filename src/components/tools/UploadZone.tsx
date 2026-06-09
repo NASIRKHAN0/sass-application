@@ -127,11 +127,25 @@ export function UploadZone({ tool, userPlan = "FREE" }: UploadZoneProps) {
       formData.append("jobType", tool.slug)
 
       const res = await fetch("/api/upload", { method: "POST", body: formData })
-      const data = await res.json() as { jobId?: string; status?: string; error?: string }
+
+      let data: { jobId?: string; status?: string; error?: string } = {}
+      try {
+        data = await res.json()
+      } catch {
+        // Server returned non-JSON (e.g. a Next.js error page after hot reload)
+      }
 
       if (!res.ok) {
         setState("error")
-        setError(data.error ?? "Upload failed. Please try again.")
+        if (res.status === 401) {
+          setError("Please sign in to convert files.")
+        } else if (res.status === 429) {
+          setError(data.error ?? "Daily limit reached. Upgrade to Pro for unlimited conversions.")
+        } else if (res.status === 503) {
+          setError(data.error ?? "This tool is coming soon.")
+        } else {
+          setError(data.error ?? "Upload failed. Please try a hard refresh (Ctrl+Shift+R) and try again.")
+        }
         return
       }
 

@@ -55,3 +55,31 @@ export async function requireAuth(): Promise<string> {
   if (!userId) throw new Response("Unauthorized", { status: 401 })
   return userId
 }
+
+/**
+ * Returns the current user or a shared guest account for unauthenticated visitors.
+ * Guest users get FREE plan limits. No sign-in required.
+ */
+export async function getCurrentUserOrGuest(): Promise<User & { isGuest: boolean }> {
+  const { userId } = await auth()
+
+  if (userId) {
+    const existing = await prisma.user.findUnique({ where: { clerkId: userId } })
+    if (existing) return { ...existing, isGuest: false }
+
+    const clerkUser = await currentUser()
+    if (!clerkUser) throw new Response("Unauthorized", { status: 401 })
+    const email = clerkUser.emailAddresses[0]?.emailAddress ?? ""
+    const name = [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || null
+    const created = await prisma.user.create({ data: { clerkId: userId, email, name, plan: "FREE" } })
+    return { ...created, isGuest: false }
+  }
+
+  // No session — get or create the shared guest account
+  const guest = await prisma.user.upsert({
+    where: { clerkId: "guest_anonymous" },
+    update: {},
+    create: { clerkId: "guest_anonymous", email: "guest@fileai.app", plan: "FREE" },
+  })
+  return { ...guest, isGuest: true }
+}
